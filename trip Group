@@ -1,0 +1,55 @@
+import pandas as pd
+import streamlit as st
+
+st.set_page_config(
+    page_title="24h du Mans", page_icon="🏎️", layout="wide"
+)
+
+# Coller le lien du Google Sheet ici
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1yj3nioXvEvf9Pt4tFaFziAZLD5fijqPYGUdssmx2kD0/edit?usp=sharing"
+
+
+def load_data(sheet_name):
+  # Extraction de l'ID du document pour charger directement en CSV
+  sheet_id = SHEET_URL.split("/d/")[1].split("/")[0]
+  url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+  return pd.read_csv(url)
+
+
+st.title("🏎️ Voyage 24h du Mans")
+
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["💰 Budget", "📅 Planning", "📦 Logistique", "📸 Photos"]
+)
+
+with tab1:
+  st.header("Budget & Dépenses")
+  try:
+    df_budget = load_data("budget")
+    st.dataframe(df_budget, use_container_width=True)
+  except Exception:
+    st.info("Données budget non disponibles.")
+
+with tab2:
+  st.header("Planning & Activités")
+  try:
+    df_planning = load_data("planning")
+    st.dataframe(df_planning, use_container_width=True)
+  except Exception:
+    st.info("Données planning non disponibles.")
+
+with tab3:
+  st.header("Logistique & Matériel")
+  try:
+    df_log = load_data("logistique")
+    st.dataframe(df_log, use_container_width=True)
+  except Exception:
+    st.info("Données logistique non disponibles.")
+
+with tab4:
+  st.header("Album Photos")
+  try:
+    df_photos = load_data("photos")
+    st.dataframe(df_photos, use_container_width=True)
+  except Exception:
+    st.info("Données photos non disponibles.")
